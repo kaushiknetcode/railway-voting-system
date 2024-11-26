@@ -3,8 +3,19 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+// Type definitions
+interface User {
+  password: string;
+  role: 'admin' | 'po' | 'apo';
+  unit: 'all' | 'Asansol Division' | 'Sealdah Division' | 'Howrah Division' | 'Malda Division' | 'Headquarter' | 'Kanchrapara Workshop' | 'Liluah Workshop' | 'Jamalpur Workshop';
+}
+
+interface Users {
+  [key: string]: User;
+}
+
 // Define all users
-const USERS = {
+const USERS: Users = {
   // Admin
   'admin': { password: 'admin123', role: 'admin', unit: 'all' },
   
@@ -50,7 +61,7 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const user = USERS[username];
+    const user = USERS[username as keyof typeof USERS];
     if (user && user.password === password) {
       // Store user info in localStorage
       localStorage.setItem('user', JSON.stringify({
