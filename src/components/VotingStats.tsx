@@ -1,4 +1,3 @@
-// src/components/VotingStats.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -14,10 +13,36 @@ const UNIT_VOTERS = {
   'Kanchrapara Workshop': 7346,
   'Liluah Workshop': 6709,
   'Jamalpur Workshop': 6909
-};
+} as const;
 
-export default function VotingStats({ selectedUnit = 'all' }) {
-  const [votingData, setVotingData] = useState<any>({});
+type UnitName = keyof typeof UNIT_VOTERS;
+
+interface VotingEntry {
+  totalVotes: number;
+  maleVotes: number;
+  femaleVotes: number;
+}
+
+interface VotingData {
+  [unit: string]: {
+    [date: string]: VotingEntry;
+  };
+}
+
+interface VotingStats {
+  totalVoters: number;
+  votesCast: number;
+  maleVotes: number;
+  femaleVotes: number;
+  turnout: string;
+}
+
+interface Props {
+  selectedUnit?: UnitName | 'all';
+}
+
+export default function VotingStats({ selectedUnit = 'all' }: Props) {
+  const [votingData, setVotingData] = useState<VotingData>({});
   const [activeDate, setActiveDate] = useState<string>('');
 
   useEffect(() => {
@@ -34,17 +59,17 @@ export default function VotingStats({ selectedUnit = 'all' }) {
     });
   }, []);
 
-  const calculateStats = () => {
+  const calculateStats = (): VotingStats => {
     if (selectedUnit === 'all') {
       // Calculate zonal stats
       let totalVotesCast = 0;
       let maleVotesCast = 0;
       let femaleVotesCast = 0;
-      const totalVoters = Object.values(UNIT_VOTERS).reduce((a: number, b: number) => a + b, 0);
+      const totalVoters = Object.values(UNIT_VOTERS).reduce((a, b) => a + b, 0);
 
       // Calculate votes from submitted data
-      Object.values(votingData).forEach((unit: any) => {
-        Object.values(unit).forEach((date: any) => {
+      Object.values(votingData).forEach((unit) => {
+        Object.values(unit).forEach((date: VotingEntry) => {
           totalVotesCast += date.totalVotes || 0;
           maleVotesCast += date.maleVotes || 0;
           femaleVotesCast += date.femaleVotes || 0;
@@ -66,7 +91,7 @@ export default function VotingStats({ selectedUnit = 'all' }) {
       let maleVotesCast = 0;
       let femaleVotesCast = 0;
 
-      Object.values(unitData).forEach((date: any) => {
+      Object.values(unitData).forEach((date: VotingEntry) => {
         totalVotesCast += date.totalVotes || 0;
         maleVotesCast += date.maleVotes || 0;
         femaleVotesCast += date.femaleVotes || 0;
