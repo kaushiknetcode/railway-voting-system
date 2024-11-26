@@ -21,8 +21,9 @@ const UNIT_VOTERS = {
   'Jamalpur Workshop': 6909
 } as const;
 
-// Type definition for unit names
+// Type definitions
 type UnitName = keyof typeof UNIT_VOTERS;
+type SelectedUnit = UnitName | 'all';
 
 interface ActivityLog {
   unit: string;
@@ -57,7 +58,7 @@ export default function Dashboard() {
   const [message, setMessage] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [votingData, setVotingData] = useState<VotingData>({});
-  const [selectedUnit, setSelectedUnit] = useState<string>('all');
+  const [selectedUnit, setSelectedUnit] = useState<SelectedUnit>('all');
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [isVotingEnabled, setIsVotingEnabled] = useState<boolean>(false);
 
@@ -286,7 +287,7 @@ export default function Dashboard() {
 
   if (!user) return null;
 
-  const stats = selectedUnit === 'all' ? calculateZonalStats() : calculateUnitStats(selectedUnit);
+  const stats = selectedUnit === 'all' ? calculateZonalStats() : calculateUnitStats(selectedUnit as UnitName);
   const chartData = prepareChartData();
 
   return (
