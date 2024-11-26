@@ -19,7 +19,10 @@ const UNIT_VOTERS = {
   'Kanchrapara Workshop': 7346,
   'Liluah Workshop': 6709,
   'Jamalpur Workshop': 6909
-};
+} as const;
+
+// Type definition for unit names
+type UnitName = keyof typeof UNIT_VOTERS;
 
 interface ActivityLog {
   unit: string;
@@ -125,12 +128,12 @@ export default function Dashboard() {
     };
   }, [router]);
 
-  const calculateUnitStats = (unitName: string) => {
+  const calculateUnitStats = (unitName: UnitName) => {
     const unitData = votingData[unitName] || {};
     let totalVotesCast = 0;
     let maleVotesCast = 0;
     let femaleVotesCast = 0;
-
+  
     Object.values(unitData).forEach((dateData) => {
       Object.values(dateData).forEach((entry) => {
         totalVotesCast += entry.totalVotes || 0;
@@ -138,7 +141,7 @@ export default function Dashboard() {
         femaleVotesCast += entry.femaleVotes || 0;
       });
     });
-
+  
     return {
       totalVotesCast,
       maleVotesCast,
