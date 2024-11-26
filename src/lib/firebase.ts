@@ -2,14 +2,13 @@ import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
-  // Your Firebase config here (copy from Firebase Console)
-  apiKey: "AIzaSyCIoRUWf_qSAWh2CxyTJlP2OvRA_gS4TZo",
-  authDomain: "railway-voting-system.firebaseapp.com",
-  projectId: "railway-voting-system",
-  databaseURL: "https://railway-voting-system-default-rtdb.asia-southeast1.firebasedatabase.app", // Add this line
-  storageBucket: "railway-voting-system.firebasestorage.app",
-  messagingSenderId: "100736759573",
-  appId: "1:100736759573:web:a437a30a97ce1f49b2ef0b"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
