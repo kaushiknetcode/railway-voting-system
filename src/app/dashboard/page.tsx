@@ -272,7 +272,7 @@ export default function Dashboard() {
   };
 
   const prepareChartData = () => {
-    const unitData = Object.keys(UNIT_VOTERS).map(unit => {
+    const unitData = (Object.keys(UNIT_VOTERS) as UnitName[]).map(unit => {
       const stats = calculateUnitStats(unit);
       return {
         name: unit,
@@ -280,7 +280,7 @@ export default function Dashboard() {
         votedCount: stats.totalVotesCast
       };
     });
-
+  
     return { unitData };
   };
 
