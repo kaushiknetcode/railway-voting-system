@@ -385,16 +385,16 @@ export default function Dashboard() {
 
         {/* Unit Selection */}
         <div className="bg-white rounded-lg shadow p-4">
-          <select
-            value={selectedUnit}
-            onChange={(e) => setSelectedUnit(e.target.value)}
-            className="w-full md:w-64 p-2 border rounded-md"
-          >
-            <option value="all">All Units (Zonal View)</option>
-            {Object.keys(UNIT_VOTERS).map(unit => (
-              <option key={unit} value={unit}>{unit}</option>
-            ))}
-          </select>
+        <select
+  value={selectedUnit}
+  onChange={(e) => setSelectedUnit(e.target.value as SelectedUnit)}
+  className="w-full md:w-64 p-2 border rounded-md"
+>
+  <option value="all">All Units (Zonal View)</option>
+  {Object.keys(UNIT_VOTERS).map(unit => (
+    <option key={unit} value={unit}>{unit}</option>
+  ))}
+</select>
         </div>
 
         {/* Stats Cards */}
