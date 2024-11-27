@@ -5,14 +5,9 @@ const config: Config = {
     './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {
-      height: {
-        '300': '300px',
-        '400': '400px',
-      }
-    },
+    extend: {},
   },
   plugins: [],
-} 
+}
 
 export default config

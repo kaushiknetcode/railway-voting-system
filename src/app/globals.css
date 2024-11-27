@@ -3,13 +3,52 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 243, 244, 246;
+  --bg-color: 248, 250, 252;
 }
 
 body {
-  min-height: 100vh;
-  background-color: rgb(var(--background-rgb));
+  background-color: rgb(var(--bg-color));
+}
+
+/* Base card styles */
+.white-card {
+  @apply bg-white rounded-lg shadow-md p-6 border border-gray-100;
+}
+
+/* Button styles */
+.btn-base {
+  @apply px-4 py-2 rounded-md transition-colors duration-200;
+}
+
+.btn-primary {
+  @apply btn-base bg-blue-500 text-white hover:bg-blue-600;
+}
+
+.btn-danger {
+  @apply btn-base bg-red-500 text-white hover:bg-red-600;
+}
+
+/* Input styles */
+.input-field {
+  @apply w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
+/* Layout styles */
+.card-grid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6;
+}
+
+/* Stats cards */
+.stats-card {
+  @apply white-card flex flex-col;
+}
+
+.stats-value {
+  @apply text-3xl font-bold text-gray-900;
+}
+
+.stats-label {
+  @apply text-sm font-medium text-gray-600;
 }
 
 @layer base {
