@@ -150,13 +150,13 @@ export default function Dashboard() {
       turnoutPercentage: ((totalVotesCast / UNIT_VOTERS[unitName]) * 100).toFixed(2)
     };
   };
-
+  
   const calculateZonalStats = () => {
     let totalVotesCast = 0;
     let maleVotesCast = 0;
     let femaleVotesCast = 0;
     const totalVoters = Object.values(UNIT_VOTERS).reduce((a, b) => a + b, 0);
-
+  
     Object.values(votingData).forEach((unitData) => {
       Object.values(unitData).forEach((dateData) => {
         Object.values(dateData).forEach((entry) => {
@@ -166,7 +166,7 @@ export default function Dashboard() {
         });
       });
     });
-
+  
     return {
       totalVotesCast,
       maleVotesCast,
@@ -174,7 +174,7 @@ export default function Dashboard() {
       turnoutPercentage: ((totalVotesCast / totalVoters) * 100).toFixed(2)
     };
   };
-
+  
   const handleSystemReset = async () => {
     try {
       if (!window.confirm('WARNING: Are you sure you want to reset the entire system?')) {
@@ -186,16 +186,16 @@ export default function Dashboard() {
       if (!window.confirm('FINAL WARNING: All data will be permanently deleted. Proceed?')) {
         return;
       }
-
+  
       setMessage('Resetting system...');
-
+  
       // Reset each path in the database
       await Promise.all([
         set(ref(db, 'votes'), null),
         set(ref(db, 'activeDate'), null),
         set(ref(db, 'votingEnabled'), false)
       ]);
-
+  
       // Clear local states
       setVotingData({});
       setActivityLogs([]);
@@ -203,7 +203,7 @@ export default function Dashboard() {
       setIsVotingEnabled(false);
       
       setMessage('System reset successful');
-
+  
     } catch (error) {
       console.error('Error resetting system:', error);
       setMessage('Error resetting system. Please try again.');
@@ -219,10 +219,10 @@ export default function Dashboard() {
       setMessage('Error toggling voting status');
     }
   };
-
+  
   const handleDateActivation = async (date: string) => {
     if (!user || user.role !== 'admin') return;
-
+  
     try {
       await set(ref(db, 'activeDate'), date);
       setMessage(`Date ${date} activated successfully`);
@@ -231,7 +231,7 @@ export default function Dashboard() {
       setMessage('Failed to activate date');
     }
   };
-
+  
   const handleVoteSubmission = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeDate || !isVotingEnabled) {
@@ -271,7 +271,7 @@ export default function Dashboard() {
       setIsSubmitting(false);
     }
   };
-
+  
   const prepareChartData = () => {
     const unitData = (Object.keys(UNIT_VOTERS) as UnitName[]).map(unit => {
       const stats = calculateUnitStats(unit);
@@ -284,9 +284,9 @@ export default function Dashboard() {
   
     return { unitData };
   };
-
+  
   if (!user) return null;
-
+  
   const stats = selectedUnit === 'all' ? calculateZonalStats() : calculateUnitStats(selectedUnit as UnitName);
   const chartData = prepareChartData();
 
@@ -310,7 +310,7 @@ export default function Dashboard() {
           </div>
         </div>
       </nav>
-
+  
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         {/* Admin Controls */}
@@ -351,212 +351,211 @@ export default function Dashboard() {
         )}
 
         {/* Voting Dates */}
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="font-medium mb-2">Voting Dates:</h3>
+        <div className="flex gap-2 flex-wrap">
+          {VOTING_DATES.map(date => {
+            const [year, month, day] = date.split('-');
+            const formattedDate = `${day}/${month}/${year}`;
+            return (
+              <button
+                key={date}
+                onClick={() => user.role === 'admin' && handleDateActivation(date)}
+                disabled={user.role !== 'admin'}
+                className={`px-4 py-2 rounded ${
+                  activeDate === date 
+                    ? 'bg-green-500 text-white' 
+                    : user.role === 'admin'
+                    ? 'bg-gray-200 hover:bg-gray-300 cursor-pointer'
+                    : 'bg-gray-200'
+                }`}
+              >
+                {formattedDate}
+                {activeDate === date && ' (Active)'}
+              </button>
+            );
+          })}
+        </div>
+        {!activeDate && (
+          <p className="mt-2 text-sm text-amber-500">
+            No active date selected
+          </p>
+        )}
+      </div>
+
+      {/* Unit Selection */}
+      <div className="bg-white rounded-lg shadow p-4">
+        <select
+          value={selectedUnit}
+          onChange={(e) => setSelectedUnit(e.target.value as SelectedUnit)}
+          className="w-full md:w-64 p-2 border rounded-md"
+        >
+          <option value="all">All Units (Zonal View)</option>
+          {Object.keys(UNIT_VOTERS).map(unit => (
+            <option key={unit} value={unit}>{unit}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="font-medium mb-2">Voting Dates:</h3>
-          <div className="flex gap-2 flex-wrap">
-            {VOTING_DATES.map(date => {
-              const [year, month, day] = date.split('-');
-              const formattedDate = `${day}/${month}/${year}`;
-              return (
-                <button
-                  key={date}
-                  onClick={() => user.role === 'admin' && handleDateActivation(date)}
-                  disabled={user.role !== 'admin'}
-                  className={`px-4 py-2 rounded ${
-                    activeDate === date 
-                      ? 'bg-green-500 text-white' 
-                      : user.role === 'admin'
-                      ? 'bg-gray-200 hover:bg-gray-300 cursor-pointer'
-                      : 'bg-gray-200'
-                  }`}
-                >
-                  {formattedDate}
-                  {activeDate === date && ' (Active)'}
-                </button>
-              );
-            })}
-          </div>
-          {!activeDate && (
-            <p className="mt-2 text-sm text-amber-500">
-              No active date selected
-            </p>
+          <h3 className="font-medium mb-2">Total Voters</h3>
+          <p className="text-3xl font-bold">
+            {(selectedUnit === 'all' 
+              ? Object.values(UNIT_VOTERS).reduce((a, b) => a + b, 0)
+              : UNIT_VOTERS[selectedUnit]
+            ).toLocaleString()}
+          </p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-4">
+          <h3 className="font-medium mb-2">Votes Cast</h3>
+          <p className="text-3xl font-bold">{stats.totalVotesCast.toLocaleString()}</p>
+          <p className="text-blue-600">{stats.turnoutPercentage}% Turnout</p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-4">
+          <h3 className="font-medium mb-2">Gender Split</h3>
+          <p>Male: {stats.maleVotesCast.toLocaleString()}</p>
+          <p>Female: {stats.femaleVotesCast.toLocaleString()}</p>
+        </div>
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white rounded-lg shadow p-4">
+          <h3 className="font-medium mb-4">Unit-wise Progress</h3>
+          <UnitBarChart data={chartData.unitData} />
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-4">
+          <h3 className="font-medium mb-4">Gender Distribution</h3>
+          <GenderPieChart 
+            maleVotes={stats.maleVotesCast}
+            femaleVotes={stats.femaleVotesCast}
+          />
+        </div>
+      </div>
+
+      {/* Vote Submission Form (for PO/APO only) */}
+      {user.role !== 'admin' && (
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-bold mb-4">Submit Votes - {user.unit}</h2>
+          {!activeDate ? (
+            <p className="text-red-500">Waiting for admin to activate voting date</p>
+          ) : !isVotingEnabled ? (
+            <p className="text-red-500">Voting is currently disabled</p>
+          ) : (
+            <form onSubmit={handleVoteSubmission} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Male Votes</label>
+                <input
+                  type="number"
+                  value={maleVotes || ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setMaleVotes(val === '' ? 0 : parseInt(val));
+                  }}
+                  className="mt-1 block w-full border rounded-md shadow-sm p-2"
+                  min="0"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Female Votes</label>
+                <input
+                  type="number"
+                  value={femaleVotes || ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFemaleVotes(val === '' ? 0 : parseInt(val));
+                  }}
+                  className="mt-1 block w-full border rounded-md shadow-sm p-2"
+                  min="0"
+                />
+              </div>
+
+              <div className="text-sm text-gray-600">
+                Total Votes to Submit: {maleVotes + femaleVotes}
+              </div>
+
+              {message && (
+                <div className={`text-sm ${
+                  message.includes('Error') || message.includes('Failed')
+                    ? 'text-red-500'
+                    : 'text-green-500'
+                }`}>
+                  {message}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full py-2 px-4 rounded ${
+                  isSubmitting
+                    ? 'bg-gray-300 cursor-not-allowed'
+                    : 'bg-blue-500 hover:bg-blue-600 text-white'
+                }`}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Votes'}
+              </button>
+            </form>
           )}
         </div>
+      )}
 
-        {/* Unit Selection */}
-        <div className="bg-white rounded-lg shadow p-4">
-        <select
-  value={selectedUnit}
-  onChange={(e) => setSelectedUnit(e.target.value as SelectedUnit)}
-  className="w-full md:w-64 p-2 border rounded-md"
->
-  <option value="all">All Units (Zonal View)</option>
-  {Object.keys(UNIT_VOTERS).map(unit => (
-    <option key={unit} value={unit}>{unit}</option>
-  ))}
-</select>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="font-medium mb-2">Total Voters</h3>
-            <p className="text-3xl font-bold">
-              {(selectedUnit === 'all' 
-                ? Object.values(UNIT_VOTERS).reduce((a, b) => a + b, 0)
-                : UNIT_VOTERS[selectedUnit]
-              ).toLocaleString()}
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="font-medium mb-2">Votes Cast</h3>
-            <p className="text-3xl font-bold">{stats.totalVotesCast.toLocaleString()}</p>
-            <p className="text-blue-600">{stats.turnoutPercentage}% Turnout</p>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="font-medium mb-2">Gender Split</h3>
-            <p>Male: {stats.maleVotesCast.toLocaleString()}</p>
-            <p>Female: {stats.femaleVotesCast.toLocaleString()}</p>
-          </div>
-        </div>
-
-        {/* Charts */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="font-medium mb-4">Unit-wise Progress</h3>
-            <UnitBarChart data={chartData.unitData} />
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="font-medium mb-4">Gender Distribution</h3>
-            <GenderPieChart 
-              maleVotes={stats.maleVotesCast}
-              femaleVotes={stats.femaleVotesCast}
-            />
-          </div>
-        </div>
-
-        {/* Vote Submission Form (for PO/APO only) */}
-        {user.role !== 'admin' && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold mb-4">Submit Votes - {user.unit}</h2>
-            {!activeDate ? (
-              <p className="text-red-500">Waiting for admin to activate voting date</p>
-            ) : !isVotingEnabled ? (
-              <p className="text-red-500">Voting is currently disabled</p>
-            ) : (
-              <form onSubmit={handleVoteSubmission} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Male Votes</label>
-                  <input
-                    type="number"
-                    value={maleVotes || ''}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setMaleVotes(val === '' ? 0 : parseInt(val));
-                    }}
-                    className="mt-1 block w-full border rounded-md shadow-sm p-2"
-                    min="0"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Female Votes</label>
-                  <input
-                    type="number"
-                    value={femaleVotes || ''}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setFemaleVotes(val === '' ? 0 : parseInt(val));
-                    }}
-                    className="mt-1 block w-full border rounded-md shadow-sm p-2"
-                    min="0"
-                  />
-                </div>
-
-                <div className="text-sm text-gray-600">
-                  Total Votes to Submit: {maleVotes + femaleVotes}
-                </div>
-
-                {message && (
-                  <div className={`text-sm ${
-                    message.includes('Error') || message.includes('Failed')
-                      ? 'text-red-500'
-                      : 'text-green-500'
-                  }`}>
-                    {message}
+      {/* Activity Log */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-bold mb-4">Activity Log</h2>
+        <div className="space-y-4 max-h-96 overflow-y-auto">
+          {activityLogs.filter(log => log.timestamp).map((log, index) => {
+            const timestamp = new Date(log.timestamp);
+            let formattedDate = 'Invalid Date';
+            
+            try {
+              formattedDate = new Intl.DateTimeFormat('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              }).format(timestamp);
+            } catch (error) {
+              console.error('Date formatting error:', error);
+            }
+            
+            return (
+              <div 
+                key={index} 
+                className="border-l-4 border-blue-500 pl-4 py-2 hover:bg-gray-50"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-medium">{log.unit}</p>
+                    <p className="text-sm text-gray-600">
+                      Submitted by: {log.submittedBy}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Votes - Male: {log.maleVotes}, Female: {log.femaleVotes}, 
+                      Total: {log.totalVotes}
+                    </p>
                   </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`w-full py-2 px-4 rounded ${
-                    isSubmitting
-                      ? 'bg-gray-300 cursor-not-allowed'
-                      : 'bg-blue-500 hover:bg-blue-600 text-white'
-                  }`}
-                >
-                  {isSubmitting ? 'Submitting...' : 'Submit Votes'}
-                </button>
-              </form>
-            )}
-          </div>
-        )}
-
-        {/* Activity Log */}
-<div className="bg-white rounded-lg shadow p-6">
-  <h2 className="text-xl font-bold mb-4">Activity Log</h2>
-  <div className="space-y-4 max-h-96 overflow-y-auto">
-    {activityLogs.filter(log => log.timestamp).map((log, index) => {
-      const timestamp = new Date(log.timestamp);
-      let formattedDate = 'Invalid Date';
-      
-      try {
-        formattedDate = new Intl.DateTimeFormat('en-IN', {
-          timeZone: 'Asia/Kolkata',
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true
-        }).format(timestamp);
-      } catch (error) {
-        console.error('Date formatting error:', error);
-      }
-      
-      return (
-        <div 
-          key={index} 
-          className="border-l-4 border-blue-500 pl-4 py-2 hover:bg-gray-50"
-        >
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="font-medium">{log.unit}</p>
-              <p className="text-sm text-gray-600">
-                Submitted by: {log.submittedBy}
-              </p>
-              <p className="text-sm text-gray-600">
-                Votes - Male: {log.maleVotes}, Female: {log.femaleVotes}, 
-                Total: {log.totalVotes}
-              </p>
-            </div>
-            <span className="text-sm text-gray-500">
-              {formattedDate}
-            </span>
-          </div>
+                  <span className="text-sm text-gray-500">
+                    {formattedDate}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+          {activityLogs.length === 0 && (
+            <p className="text-gray-500 text-center py-4">No activity yet</p>
+          )}
         </div>
-      );
-    })}
-    {activityLogs.length === 0 && (
-      <p className="text-gray-500 text-center py-4">No activity yet</p>
-    )}
+      </div>
+    </main>
   </div>
-</div>
-      </main>
-    </div>
-  );
-}
+);
