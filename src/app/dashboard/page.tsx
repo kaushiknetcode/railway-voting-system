@@ -508,54 +508,55 @@ export default function Dashboard() {
 
       {/* Activity Log */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4">Activity Log</h2>
-        <div className="space-y-4 max-h-96 overflow-y-auto">
-          {activityLogs.filter(log => log.timestamp).map((log, index) => {
-            const timestamp = new Date(log.timestamp);
-            let formattedDate = 'Invalid Date';
-            
-            try {
-              formattedDate = new Intl.DateTimeFormat('en-IN', {
-                timeZone: 'Asia/Kolkata',
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-              }).format(timestamp);
-            } catch (error) {
-              console.error('Date formatting error:', error);
-            }
-            
-            return (
-              <div 
-                key={index} 
-                className="border-l-4 border-blue-500 pl-4 py-2 hover:bg-gray-50"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium">{log.unit}</p>
-                    <p className="text-sm text-gray-600">
-                      Submitted by: {log.submittedBy}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Votes - Male: {log.maleVotes}, Female: {log.femaleVotes}, 
-                      Total: {log.totalVotes}
-                    </p>
+          <h2 className="text-xl font-bold mb-4">Activity Log</h2>
+          <div className="space-y-4 max-h-96 overflow-y-auto">
+            {activityLogs.filter(log => log.timestamp).map((log, index) => {
+              const timestamp = new Date(log.timestamp);
+              let formattedDate = 'Invalid Date';
+              
+              try {
+                formattedDate = new Intl.DateTimeFormat('en-IN', {
+                  timeZone: 'Asia/Kolkata',
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                }).format(timestamp);
+              } catch (error) {
+                console.error('Date formatting error:', error);
+              }
+              
+              return (
+                <div 
+                  key={index} 
+                  className="border-l-4 border-blue-500 pl-4 py-2 hover:bg-gray-50"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-medium">{log.unit}</p>
+                      <p className="text-sm text-gray-600">
+                        Submitted by: {log.submittedBy}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Votes - Male: {log.maleVotes}, Female: {log.femaleVotes}, 
+                        Total: {log.totalVotes}
+                      </p>
+                    </div>
+                    <span className="text-sm text-gray-500">
+                      {formattedDate}
+                    </span>
                   </div>
-                  <span className="text-sm text-gray-500">
-                    {formattedDate}
-                  </span>
                 </div>
-              </div>
-            );
-          })}
-          {activityLogs.length === 0 && (
-            <p className="text-gray-500 text-center py-4">No activity yet</p>
-          )}
+              );
+            })}
+            {activityLogs.length === 0 && (
+              <p className="text-gray-500 text-center py-4">No activity yet</p>
+            )}
+          </div>
         </div>
-      </div>
-    </main>
-  </div>
-);
+      </main>
+    </div>
+  );
+}
