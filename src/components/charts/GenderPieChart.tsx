@@ -22,8 +22,9 @@ export default function GenderPieChart({ maleVotes, femaleVotes }: GenderPieChar
           data={data}
           cx="50%"
           cy="50%"
-          labelLine={false}
-          outerRadius={120}
+          labelLine={true}
+          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+          outerRadius={130}
           fill="#8884d8"
           dataKey="value"
         >
@@ -32,7 +33,7 @@ export default function GenderPieChart({ maleVotes, femaleVotes }: GenderPieChar
           ))}
         </Pie>
         <Tooltip />
-        <Legend verticalAlign="bottom" height={36} />
+        <Legend verticalAlign="bottom" />
       </PieChart>
     </ResponsiveContainer>
   );

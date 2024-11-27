@@ -22,8 +22,9 @@ export default function UnitBarChart({ data }: UnitBarChartProps) {
           dataKey="name" 
           angle={-45}
           textAnchor="end"
-          interval={0}
           height={100}
+          interval={0}
+          tick={{ fontSize: 12 }}
         />
         <YAxis />
         <Tooltip />
