@@ -4,40 +4,49 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-rgb: 248, 249, 250;
+  --background-rgb: 243, 244, 246;
+}
+
+body {
+  background-color: rgb(var(--background-rgb));
+  color: rgb(var(--foreground-rgb));
 }
 
 @layer components {
-  .page-container {
-    @apply min-h-screen bg-gray-50;
+  .card {
+    @apply bg-white rounded-lg shadow-md p-4 mb-4;
   }
 
-  .header {
-    @apply bg-white shadow-sm border-b;
+  .admin-card {
+    @apply bg-white rounded-lg shadow p-4;
   }
 
-  .header-content {
-    @apply max-w-7xl mx-auto px-4 py-4 flex justify-between items-center;
+  .button-base {
+    @apply px-4 py-2 rounded transition duration-200;
   }
 
-  .content-section {
-    @apply bg-white rounded-lg shadow-md p-6 mb-4;
+  .button-primary {
+    @apply button-base bg-blue-500 text-white hover:bg-blue-600;
   }
 
-  .control-button {
-    @apply px-4 py-2 rounded-md text-sm font-medium transition-colors;
+  .button-danger {
+    @apply button-base bg-red-500 text-white hover:bg-red-600;
   }
 
-  .control-button-active {
-    @apply bg-green-500 text-white;
+  .date-button {
+    @apply button-base bg-gray-200 hover:bg-gray-300;
   }
 
-  .control-button-inactive {
-    @apply bg-gray-100 hover:bg-gray-200;
+  .date-button-active {
+    @apply button-base bg-green-500 text-white;
   }
 
-  .select-box {
-    @apply w-full md:w-64 p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  .input-field {
+    @apply mt-1 block w-full border rounded-md shadow-sm p-2;
+  }
+
+  .select-field {
+    @apply w-full md:w-64 p-2 border rounded-md;
   }
 
   .stats-grid {
@@ -45,15 +54,15 @@
   }
 
   .stats-card {
-    @apply bg-white rounded-lg shadow-md p-6;
+    @apply bg-white rounded-lg shadow p-4;
   }
 
-  .stats-value {
+  .stats-number {
     @apply text-3xl font-bold;
   }
 
   .stats-label {
-    @apply text-sm font-medium text-gray-600;
+    @apply font-medium mb-2;
   }
 
   .charts-grid {
@@ -61,10 +70,49 @@
   }
 
   .chart-container {
-    @apply bg-white rounded-lg shadow-md p-6;
+    @apply bg-white rounded-lg shadow p-4;
   }
 
-  .activity-log-item {
-    @apply border-l-4 border-blue-500 pl-4 py-3 hover:bg-gray-50;
+  .activity-log {
+    @apply space-y-4 max-h-96 overflow-y-auto;
   }
+
+  .activity-item {
+    @apply border-l-4 border-blue-500 pl-4 py-2 hover:bg-gray-50;
+  }
+
+  .form-container {
+    @apply bg-white rounded-lg shadow p-6;
+  }
+
+  .form-group {
+    @apply space-y-4;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-gray-700;
+  }
+}
+
+/* Header Styles */
+.header {
+  @apply bg-white shadow;
+}
+
+.header-content {
+  @apply max-w-7xl mx-auto px-4 py-4 flex justify-between items-center;
+}
+
+/* Main Content */
+.main-content {
+  @apply max-w-7xl mx-auto px-4 py-6 space-y-6;
+}
+
+/* Message Styles */
+.success-message {
+  @apply text-sm text-green-500;
+}
+
+.error-message {
+  @apply text-sm text-red-500;
 }
