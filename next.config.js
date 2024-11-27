@@ -5,7 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   eslint: {
-    ignoreDuringBuilds: true  // Add this line to temporarily bypass ESLint during build
+    ignoreDuringBuilds: true
   },
   webpack: (config) => {
     config.resolve.alias = {
@@ -13,6 +13,13 @@ const nextConfig = {
       '@': path.join(__dirname, 'src'),
     };
     return config;
+  },
+  // Add this PostCSS config
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
   },
 };
 

@@ -1,8 +1,12 @@
 /** @type {import('postcss-load-config').Config} */
 const config = {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+    tailwindcss: {
+      config: './tailwind.config.ts'
+    },
+    autoprefixer: {
+      flexbox: 'no-2009'
+    },
   },
 };
 
